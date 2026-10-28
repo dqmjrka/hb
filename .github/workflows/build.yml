@@ -1,6 +1,6 @@
-name: Build HackBot IPA14: 
+name: Build HackBot IPA
 
-14:
+on:
   push:
     branches: [ "main", "master" ]
   workflow_dispatch:
