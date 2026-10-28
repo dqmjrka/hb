@@ -8,28 +8,39 @@ on:
 jobs:
   build:
     runs-on: macos-14
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build IPA
+      - name: Show Xcode Version
+        run: |
+          xcodebuild -version
+
+      - name: Build iOS Application
         run: |
           xcodebuild clean build \
             -project HackBot.xcodeproj \
-            -scheme HackBot \
+            -target HackBot \
             -configuration Release \
-            -destination 'generic/platform=iOS' \
+            -sdk iphoneos \
             -derivedDataPath build \
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=YES
-            
-          mkdir -p Payload
-          cp -r build/Build/Products/Release-iphoneos/HackBot.app Payload/
-          zip -r -9 HackBot.ipa Payload
 
-      - name: Upload Artifact
+      - name: Package HackBot.ipa
+        run: |
+          mkdir -p Payload
+          APP_PATH=$(find build -name "HackBot.app" -type d | head -n 1)
+          echo "Found app at: $APP_PATH"
+          cp -r "$APP_PATH" Payload/
+          zip -r -9 HackBot.ipa Payload
+          ls -lh HackBot.ipa
+
+      - name: Upload HackBot.ipa Artifact
         uses: actions/upload-artifact@v4
         with:
           name: HackBot-iOS-IPA
           path: HackBot.ipa
+          retention-days: 14
