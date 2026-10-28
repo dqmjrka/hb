@@ -1,25 +1,18 @@
-name: Build HackBot IPA
+name: Build HackBot IPA14: 
 
-on:
+14:
   push:
-    branches: [ "main", "master" ]
-  pull_request:
     branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: macos-14
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Show Xcode Version
-        run: |
-          xcodebuild -version
-
-      - name: Build iOS Application (Release)
+      - name: Build IPA
         run: |
           xcodebuild clean build \
             -project HackBot.xcodeproj \
@@ -27,20 +20,16 @@ jobs:
             -configuration Release \
             -destination 'generic/platform=iOS' \
             -derivedDataPath build \
-            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
-
-      - name: Package HackBot.ipa
-        run: |
+            CODE_SIGNING_ALLOWED=YES
+            
           mkdir -p Payload
           cp -r build/Build/Products/Release-iphoneos/HackBot.app Payload/
           zip -r -9 HackBot.ipa Payload
-          ls -lh HackBot.ipa
 
-      - name: Upload HackBot.ipa Artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: HackBot-iOS-IPA
           path: HackBot.ipa
-          retention-days: 14
