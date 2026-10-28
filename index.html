@@ -1,23 +1,53 @@
 <!DOCTYPE html>
-<html lang="ru">
+html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transfer Gift</title>
+    <title>Подарок</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: #17212b;
+            color: white;
+            font-family: sans-serif;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background: #2ea6ff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
-<body style="background: transparent;">
+<body>
+    <button id="giftBtn" onclick="sendGift()">Открыть отправку подарка</button>
+
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
+        tg.expand();
 
-        // Открываем окно отправки подарка пользователю @yxo42
-        tg.openTelegramLink("tg://gift?username=yxo42");
+        function sendGift() {
+            // Открываем профиль с подарком
+            tg.openTelegramLink("tg://resolve?domain=yxo42");
+        }
 
-        // Закрываем шторку Mini App
-        setTimeout(() => {
-            tg.close();
-        }, 100);
+        // Автоматическая попытка при открытии
+        try {
+            sendGift();
+        } catch (e) {
+            console.error(e);
+        }
     </script>
 </body>
 </html>
